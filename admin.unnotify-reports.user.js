@@ -19,9 +19,6 @@ dry.once("dom", () => {
         showMessage(orig, nick, message, options) {
             if (nick === "Report" && options.staff) {
                 options.notify = options.highlight = false;
-                if (message[0] && message[0].value && message[0].value.includes("Enabled notifications in this room")) {
-                    return false;
-                }
                 if (message[1] && message[1].value) {
                     let text = message[1].value;
                     if (text.includes("BLACKLIST") && BLACK.test(text)) {
