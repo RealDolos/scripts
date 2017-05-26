@@ -3,7 +3,7 @@
 // @namespace   volafile.ip.hider
 // @description Hides ip addresses for mods.
 // @include     https://volafile.org/r/*
-// @version     13
+// @version     14
 // @grant       none
 // @require     https://cdn.rawgit.com/spencinator/scripts/1036596a97d4721a6c14a7a6750d102371e4e1e5/dry.js
 // @run-at      document-start
@@ -32,6 +32,14 @@ body[noipspls] .tag_key_ip {
 }
 .username.ban icon-hammer {
   padding: 0;
+}
+#disable_room {
+  display: inline-block;
+  vertical-align: top;
+  font-size: .8em;
+  height: 1em;
+  margin-top: -.5em;
+  margin-left: 1em;
 }
 `;
     document.body.appendChild(style);
@@ -120,4 +128,31 @@ body[noipspls] .tag_key_ip {
             return true;
         }
     }();
+
+    {
+        let settings = document.querySelector("#room_settings");
+        let disable = document.createElement("a");
+        disable.id = "disable_room";
+        let icon = document.createElement("span");
+        icon.classList.add("icon-hammer", "clickable");
+        disable.appendChild(icon);
+        settings.parentElement.appendChild(disable);
+        disable.addEventListener("click", function() {
+            dry.exts.ui.showQuestion({
+                title: "Disable this room",
+                text: "Are you sure you want to disable this room?",
+                positive: "Disable",
+                negative: "Abort"
+            }, (res) => {
+                if (!res) {
+                    return;
+                }
+                dry.exts.connection.call("editInfo", {
+                    "name": "closed",
+                    "motd": "",
+                    "disabled": true
+                });
+            });
+        });
+    }
 });
